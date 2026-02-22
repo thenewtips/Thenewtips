@@ -1,16 +1,15 @@
 <!DOCTYPE html>
-<html lang="hi">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>thenewtips | Official Website</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>thenewtips Website</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
 
 <style>
 body{
   font-family: Arial, sans-serif;
-  background:#f4f4f4;
+  background:#f2f2f2;
   margin:0;
-  padding:0;
 }
 header{
   background:#ff0000;
@@ -31,7 +30,7 @@ input,button{
 }
 button{
   background:#ff0000;
-  color:#fff;
+  color:white;
   border:none;
   cursor:pointer;
 }
@@ -41,7 +40,8 @@ button:hover{
 .hidden{display:none;}
 iframe{
   width:100%;
-  height:250px;
+  height:220px;
+  margin-bottom:10px;
   border-radius:8px;
 }
 </style>
@@ -50,25 +50,36 @@ iframe{
 <body>
 
 <header>
-  <h2>thenewtips Website</h2>
+  <h2>thenewtips Official Website</h2>
 </header>
 
-<!-- LOGIN PAGE -->
-<div class="box" id="loginBox">
-  <h3>Login / Register</h3>
-  <input type="number" id="mobile" placeholder="Mobile Number">
+<!-- REGISTER -->
+<div class="box" id="registerBox">
+  <h3>Register</h3>
+  <input type="number" id="regMobile" placeholder="Mobile Number">
+  <input type="password" id="regPass" placeholder="Password">
+  <button onclick="register()">Register</button>
+  <p>Already registered? <a href="#" onclick="showLogin()">Login</a></p>
+</div>
+
+<!-- LOGIN -->
+<div class="box hidden" id="loginBox">
+  <h3>Login</h3>
+  <input type="number" id="logMobile" placeholder="Mobile Number">
+  <input type="password" id="logPass" placeholder="Password">
   <button onclick="login()">Login</button>
 </div>
 
-<!-- HOME PAGE -->
+<!-- HOME -->
 <div class="box hidden" id="homeBox">
   <h3>Welcome to thenewtips</h3>
 
-  <iframe 
-    src="https://www.youtube.com/embed?listType=user_uploads&list=thenewtips">
-  </iframe>
+  <h4>Latest Videos</h4>
 
-  <br><br>
+  <iframe src="https://www.youtube.com/embed/9bZkp7q19f0"></iframe>
+  <iframe src="https://www.youtube.com/embed/l482T0yNkeo"></iframe>
+  <iframe src="https://www.youtube.com/embed/3tmd-ClpJxA"></iframe>
+
   <button onclick="openAdmin()">Admin Panel</button>
   <button onclick="logout()">Logout</button>
 </div>
@@ -83,53 +94,63 @@ iframe{
 <!-- ADMIN PANEL -->
 <div class="box hidden" id="adminPanel">
   <h3>Admin Panel</h3>
-  <p>Yahan se aap content edit kar sakte ho</p>
-  <button onclick="alert('Future update: video settings')">Edit Videos</button>
-  <button onclick="alert('Future update: website settings')">Website Settings</button>
+  <p>✔ Website working<br>✔ User login system active</p>
+  <button onclick="alert('Future update: Add / Remove videos')">Edit Videos</button>
   <button onclick="adminLogout()">Logout Admin</button>
 </div>
 
 <script>
-function login(){
-  let mobile = document.getElementById("mobile").value;
-  if(mobile.length < 10){
-    alert("Sahi mobile number dalo");
+function register(){
+  let m = regMobile.value;
+  let p = regPass.value;
+  if(m.length<10 || p.length<4){
+    alert("Valid mobile & password daalo");
     return;
   }
-  localStorage.setItem("user", mobile);
-  document.getElementById("loginBox").classList.add("hidden");
-  document.getElementById("homeBox").classList.remove("hidden");
+  localStorage.setItem("userMobile",m);
+  localStorage.setItem("userPass",p);
+  alert("Register successful");
+  showLogin();
+}
+
+function showLogin(){
+  registerBox.classList.add("hidden");
+  loginBox.classList.remove("hidden");
+}
+
+function login(){
+  let m = logMobile.value;
+  let p = logPass.value;
+  if(m===localStorage.getItem("userMobile") &&
+     p===localStorage.getItem("userPass")){
+    loginBox.classList.add("hidden");
+    homeBox.classList.remove("hidden");
+  }else{
+    alert("Wrong login details");
+  }
 }
 
 function logout(){
-  localStorage.removeItem("user");
   location.reload();
 }
 
 function openAdmin(){
-  document.getElementById("homeBox").classList.add("hidden");
-  document.getElementById("adminLogin").classList.remove("hidden");
+  homeBox.classList.add("hidden");
+  adminLogin.classList.remove("hidden");
 }
 
 function adminLogin(){
-  let pass = document.getElementById("adminPass").value;
-  if(pass === "admin123"){
-    document.getElementById("adminLogin").classList.add("hidden");
-    document.getElementById("adminPanel").classList.remove("hidden");
+  if(adminPass.value==="admin123"){
+    adminLogin.classList.add("hidden");
+    adminPanel.classList.remove("hidden");
   }else{
-    alert("Wrong Admin Password");
+    alert("Wrong admin password");
   }
 }
 
 function adminLogout(){
-  document.getElementById("adminPanel").classList.add("hidden");
-  document.getElementById("homeBox").classList.remove("hidden");
-}
-
-// Auto login
-if(localStorage.getItem("user")){
-  document.getElementById("loginBox").classList.add("hidden");
-  document.getElementById("homeBox").classList.remove("hidden");
+  adminPanel.classList.add("hidden");
+  homeBox.classList.remove("hidden");
 }
 </script>
 
