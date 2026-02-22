@@ -1,198 +1,188 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
 <meta charset="UTF-8">
-<title id="siteTitle">thenewtips | Ethical Learning Hub</title>
+<title>thenewtips | Admin System</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-
 <style>
-body{margin:0;font-family:Segoe UI,Arial;background:#0d0d0d;color:#fff}
-header{padding:16px;text-align:center;font-size:22px;font-weight:700;background:#111;border-bottom:2px solid red}
+body{margin:0;font-family:Arial;background:#0d0d0d;color:#fff}
+header{background:#111;padding:14px;text-align:center;font-size:22px;font-weight:bold}
 nav{display:flex;justify-content:space-around;background:#1a1a1a;padding:10px}
 nav button{background:none;border:none;color:#fff;font-size:15px}
 nav button:hover{color:red}
 .container{padding:15px}
-.section{display:none}
-.active{display:block}
-.box{background:#1f1f1f;padding:16px;border-radius:12px;margin-bottom:16px}
+.box{background:#1f1f1f;padding:15px;border-radius:10px;margin-bottom:15px}
 input,textarea,button{width:100%;padding:10px;margin-top:8px;border-radius:6px;border:none}
 input,textarea{background:#333;color:#fff}
-button{background:red;color:#fff;font-weight:600}
+button{background:red;color:#fff;font-weight:bold}
+.section{display:none}
+.active{display:block}
 .hidden{display:none}
-.hero{width:100%;border-radius:10px;margin-top:10px}
-.video-card img{width:100%;border-radius:10px}
-iframe{width:100%;height:230px;border-radius:10px;margin-top:8px}
-.tool-card,.social-card{background:#242424;padding:12px;border-radius:10px;margin-bottom:10px}
-.tool-card img{width:55px;height:55px;border-radius:8px}
-.del{background:#444;margin-top:6px}
-.dashboard{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+iframe{width:100%;height:220px;border-radius:10px;margin-top:8px}
+img{width:100%;border-radius:10px}
+.del{background:#444;margin-top:8px}
+.statBox{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
 .stat{background:#2a2a2a;padding:12px;border-radius:10px;text-align:center}
-a{color:#ff4d4d}
-.editHint{font-size:12px;color:#aaa}
 </style>
 </head>
 
 <body>
 
-<header id="headerTitle">thenewtips | Ethical Learning Hub</header>
+<header>thenewtips | Ethical Learning</header>
 
 <!-- LOGIN -->
-<div class="container" id="loginBox">
-  <div class="box">
-    <h3>Login / Register</h3>
-    <input id="mobile" placeholder="Mobile Number">
-    <input id="password" type="password" placeholder="Password">
-    <button onclick="login()">Login</button>
-  </div>
+<div id="loginBox" class="container">
+<div class="box">
+<h3>Login / Register</h3>
+<input id="mobile" placeholder="Mobile Number">
+<input id="password" type="password" placeholder="Password">
+<button onclick="login()">Login</button>
+</div>
 </div>
 
-<!-- USER VIEW -->
-<div id="mainBox" class="hidden">
+<!-- USER -->
+<div id="userPanel" class="hidden">
 <nav>
-  <button onclick="show('home')">Home</button>
-  <button onclick="show('videos')">Videos</button>
-  <button onclick="show('tools')">Tools</button>
-  <button onclick="logout()">Logout</button>
+<button onclick="showUser('home')">Home</button>
+<button onclick="showUser('videos')">Videos</button>
+<button onclick="showUser('tools')">Tools</button>
+<button onclick="logout()">Logout</button>
 </nav>
 
 <div class="container">
-  <div id="home" class="section active">
-    <div class="box">
-      <h3>Ethical Hacking & Cyber Security</h3>
-      <p id="homeText"></p>
-
-      <img class="hero" src="https://images.unsplash.com/photo-1605902711622-cfb43c44367f">
-      <img class="hero" src="https://images.unsplash.com/photo-1550751827-4bd374c3f58b">
-      <img class="hero" src="https://images.unsplash.com/photo-1591696205602-2f950c417cb9">
-
-      <h4>Contact / Support</h4>
-      <div id="socialList"></div>
-
-      <h4>Disclaimer</h4>
-      <p>This website is for educational purposes only.</p>
-    </div>
-  </div>
-
-  <div id="videos" class="section"><div id="videoList"></div></div>
-  <div id="tools" class="section"><div id="toolList"></div></div>
+<div id="home" class="section active">
+<div class="box">
+<h3>Ethical Hacking</h3>
+<p id="homeText"></p>
+<p><b>Disclaimer:</b> Educational purpose only.</p>
 </div>
 </div>
 
-<!-- ADMIN PANEL -->
+<div id="videos" class="section">
+<div id="videoList"></div>
+</div>
+
+<div id="tools" class="section">
+<div id="toolList"></div>
+</div>
+</div>
+</div>
+
+<!-- ADMIN -->
 <div id="adminPanel" class="hidden">
 <nav>
-  <button onclick="showAdmin('dashboard')">📊 Dashboard</button>
-  <button onclick="showAdmin('view')">👁 View Website</button>
-  <button onclick="showAdmin('manage')">➕ Manage Content</button>
-  <button onclick="logout()">Logout</button>
+<button onclick="showAdmin('dashboard')">Dashboard</button>
+<button onclick="showAdmin('manage')">Manage</button>
+<button onclick="logout()">Logout</button>
 </nav>
 
 <div class="container">
 
 <!-- DASHBOARD -->
 <div id="dashboard" class="section active">
-  <div class="box">
-    <h3>Live Dashboard</h3>
-    <div class="dashboard">
-      <div class="stat">Users<br><b id="uCount">0</b></div>
-      <div class="stat">Logins<br><b id="lCount">0</b></div>
-      <div class="stat">Videos<br><b id="vCount">0</b></div>
-      <div class="stat">Tools<br><b id="tCount">0</b></div>
-    </div>
-  </div>
+<div class="box">
+<h3>Live Dashboard</h3>
+<div class="statBox">
+<div class="stat">Users<br><b id="uCount">0</b></div>
+<div class="stat">Logins<br><b id="lCount">0</b></div>
+<div class="stat">Videos<br><b id="vCount">0</b></div>
+<div class="stat">Tools<br><b id="tCount">0</b></div>
 </div>
-
-<!-- VIEW MODE -->
-<div id="view" class="section">
-  <div class="box">
-    <h3>Live Website View</h3>
-    <p class="editHint">Scroll & see website. Edit options appear in Manage section.</p>
-    <button onclick="showAdmin('manage')">Go to Edit Controls</button>
-  </div>
+</div>
 </div>
 
 <!-- MANAGE -->
 <div id="manage" class="section">
-  <div class="box">
-    <h3>Edit Website Content</h3>
-    <textarea id="homeEdit" placeholder="Edit Home Text"></textarea>
-    <button onclick="saveText()">Save Home Text</button>
+<div class="box">
+<h3>Edit Home Text</h3>
+<textarea id="homeEdit"></textarea>
+<button onclick="saveHome()">Save</button>
+</div>
 
-    <hr>
-    <input id="videoLink" placeholder="YouTube Video Link">
-    <button onclick="addVideo()">Add Video</button>
+<div class="box">
+<h3>Add Video</h3>
+<input id="videoLink" placeholder="YouTube Link">
+<button onclick="addVideo()">Add Video</button>
+<div id="adminVideos"></div>
+</div>
 
-    <hr>
-    <input id="toolName" placeholder="Tool Name">
-    <input id="toolImg" placeholder="Tool Image URL">
-    <input id="toolLink" placeholder="Tool Link">
-    <textarea id="toolDesc" placeholder="Tool Description"></textarea>
-    <button onclick="addTool()">Add Tool</button>
-
-    <hr>
-    <input id="socialName" placeholder="Social Name">
-    <input id="socialLink" placeholder="Social Link">
-    <button onclick="addSocial()">Add Social Link</button>
-  </div>
+<div class="box">
+<h3>Add Tool</h3>
+<input id="toolName" placeholder="Tool Name">
+<input id="toolImg" placeholder="Image URL">
+<input id="toolLink" placeholder="Tool Link">
+<textarea id="toolDesc" placeholder="Description"></textarea>
+<button onclick="addTool()">Add Tool</button>
+<div id="adminTools"></div>
+</div>
 </div>
 
 </div>
 </div>
 
 <script>
-const ADMIN_M="9399687115", ADMIN_P="seetaram1";
-
-homeText.innerText = localStorage.getItem("homeText") ||
-"Ethical hacking helps organizations secure systems by legally finding vulnerabilities.";
+const ADMIN_M="9399687115",ADMIN_P="seetaram1";
+homeText.innerText=localStorage.getItem("homeText")||"Learn ethical hacking safely.";
 
 function login(){
-  let logins=+localStorage.getItem("logins")||0;
-  localStorage.setItem("logins",++logins);
+let l=+localStorage.getItem("logins")||0;localStorage.setItem("logins",++l);
+if(mobile.value===ADMIN_M && password.value===ADMIN_P){
+localStorage.setItem("session","admin");location.reload();return;}
+let u=+localStorage.getItem("users")||0;localStorage.setItem("users",++u);
+localStorage.setItem("session","user");location.reload();}
 
-  if(mobile.value===ADMIN_M && password.value===ADMIN_P){
-    localStorage.setItem("session","admin");
-    location.reload();return;
-  }
-  let users=+localStorage.getItem("users")||0;
-  localStorage.setItem("users",++users);
-  localStorage.setItem("session","user");
-  location.reload();
-}
-
-if(localStorage.getItem("session")==="user"){
-  loginBox.classList.add("hidden");
-  mainBox.classList.remove("hidden");
-}
-if(localStorage.getItem("session")==="admin"){
-  loginBox.classList.add("hidden");
-  adminPanel.classList.remove("hidden");
-  loadDashboard();
-}
+if(localStorage.getItem("session")==="user"){loginBox.classList.add("hidden");userPanel.classList.remove("hidden");}
+if(localStorage.getItem("session")==="admin"){loginBox.classList.add("hidden");adminPanel.classList.remove("hidden");loadAdmin();}
 
 function logout(){localStorage.removeItem("session");location.reload();}
-function show(id){document.querySelectorAll("#mainBox .section").forEach(s=>s.classList.remove("active"));document.getElementById(id).classList.add("active");}
+function showUser(id){document.querySelectorAll("#userPanel .section").forEach(s=>s.classList.remove("active"));document.getElementById(id).classList.add("active");}
 function showAdmin(id){document.querySelectorAll("#adminPanel .section").forEach(s=>s.classList.remove("active"));document.getElementById(id).classList.add("active");}
 
-function saveText(){localStorage.setItem("homeText",homeEdit.value);homeText.innerText=homeEdit.value;alert("Updated");}
+function saveHome(){localStorage.setItem("homeText",homeEdit.value);homeText.innerText=homeEdit.value;}
 
-function getId(u){let m=u.match(/(?:v=|\.be\/)([^&]+)/);return m?m[1]:null;}
-function addVideo(){let id=getId(videoLink.value);if(!id)return;let v=JSON.parse(localStorage.getItem("videos")||"[]");v.push(id);localStorage.setItem("videos",JSON.stringify(v));loadVideos();loadDashboard();}
-function loadVideos(){let v=JSON.parse(localStorage.getItem("videos")||"[]");videoList.innerHTML=v.map(i=>`<div class="box video-card"><img src="https://img.youtube.com/vi/${i}/hqdefault.jpg"><iframe src="https://www.youtube.com/embed/${i}" allowfullscreen></iframe></div>`).join("");}
-loadVideos();
+function yt(u){let m=u.match(/(?:v=|\.be\/)([^&]+)/);return m?m[1]:null;}
 
-function addTool(){let t=JSON.parse(localStorage.getItem("tools")||"[]");t.push({n:toolName.value,i:toolImg.value,l:toolLink.value,d:toolDesc.value});localStorage.setItem("tools",JSON.stringify(t));loadTools();loadDashboard();}
-function loadTools(){let t=JSON.parse(localStorage.getItem("tools")||"[]");toolList.innerHTML=t.map(x=>`<div class="tool-card"><img src="${x.i}"><b>${x.n}</b><p>${x.d}</p><a href="${x.l}" target="_blank">Open</a></div>`).join("");}
-loadTools();
+function addVideo(){
+let id=yt(videoLink.value);if(!id)return;
+let v=JSON.parse(localStorage.getItem("videos")||"[]");
+v.push(id);localStorage.setItem("videos",JSON.stringify(v));
+loadVideos();loadAdmin();}
 
-function addSocial(){let s=JSON.parse(localStorage.getItem("socials")||"[]");s.push({n:socialName.value,l:socialLink.value});localStorage.setItem("socials",JSON.stringify(s));loadSocial();}
-function loadSocial(){let s=JSON.parse(localStorage.getItem("socials")||"[]");socialList.innerHTML=s.map(x=>`<div class="social-card"><b>${x.n}</b><br><a href="${x.l}" target="_blank">${x.l}</a></div>`).join("");}
-loadSocial();
+function delVideo(i){
+let v=JSON.parse(localStorage.getItem("videos")||"[]");
+v.splice(i,1);localStorage.setItem("videos",JSON.stringify(v));
+loadVideos();loadAdmin();}
 
-function loadDashboard(){
-  uCount.innerText=localStorage.getItem("users")||0;
-  lCount.innerText=localStorage.getItem("logins")||0;
-  vCount.innerText=(JSON.parse(localStorage.getItem("videos")||"[]")).length;
-  tCount.innerText=(JSON.parse(localStorage.getItem("tools")||"[]")).length;
+function loadVideos(){
+let v=JSON.parse(localStorage.getItem("videos")||"[]");
+videoList.innerHTML=v.map(id=>`<div class="box"><iframe src="https://www.youtube.com/embed/${id}" allowfullscreen></iframe></div>`).join("");
+adminVideos.innerHTML=v.map((id,i)=>`<div class="box">${id}<button class="del" onclick="delVideo(${i})">Delete</button></div>`).join("");
+}
+
+function addTool(){
+let t=JSON.parse(localStorage.getItem("tools")||"[]");
+t.push({n:toolName.value,i:toolImg.value,l:toolLink.value,d:toolDesc.value});
+localStorage.setItem("tools",JSON.stringify(t));
+loadTools();loadAdmin();}
+
+function delTool(i){
+let t=JSON.parse(localStorage.getItem("tools")||"[]");
+t.splice(i,1);localStorage.setItem("tools",JSON.stringify(t));
+loadTools();loadAdmin();}
+
+function loadTools(){
+let t=JSON.parse(localStorage.getItem("tools")||"[]");
+toolList.innerHTML=t.map(x=>`<div class="box"><img src="${x.i}"><b>${x.n}</b><p>${x.d}</p><a href="${x.l}" target="_blank">Open</a></div>`).join("");
+adminTools.innerHTML=t.map((x,i)=>`<div class="box"><b>${x.n}</b><button class="del" onclick="delTool(${i})">Delete</button></div>`).join("");
+}
+
+function loadAdmin(){
+homeEdit.value=localStorage.getItem("homeText")||"";
+uCount.innerText=localStorage.getItem("users")||0;
+lCount.innerText=localStorage.getItem("logins")||0;
+vCount.innerText=(JSON.parse(localStorage.getItem("videos")||"[]")).length;
+tCount.innerText=(JSON.parse(localStorage.getItem("tools")||"[]")).length;
+loadVideos();loadTools();
 }
 </script>
 
