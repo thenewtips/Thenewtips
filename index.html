@@ -1,15 +1,16 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <title>thenewtips | Ethical Learning</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
+
 <style>
 body{margin:0;font-family:Arial;background:#f4f6f9}
 header{background:#111;color:#fff;padding:15px;text-align:center;font-size:22px;font-weight:bold}
 .container{padding:15px}
 .box{background:#fff;padding:15px;border-radius:10px;margin-bottom:15px;box-shadow:0 3px 8px rgba(0,0,0,.1)}
-input,button,textarea{width:100%;padding:10px;margin-top:8px;border-radius:6px;border:1px solid #ccc}
+input,textarea,button{width:100%;padding:10px;margin-top:8px;border-radius:6px;border:1px solid #ccc}
 button{background:#007bff;color:#fff;font-weight:bold;border:none}
 button:hover{background:#0056b3}
 .hidden{display:none}
@@ -18,9 +19,10 @@ nav button{background:none;border:none;font-weight:bold}
 .section{display:none}
 .active{display:block}
 iframe{width:100%;height:220px;border-radius:10px;margin-top:8px}
-.delBtn{background:#dc3545;margin-top:8px}
+img{width:100%;border-radius:10px;margin-top:8px}
+.del{background:#dc3545;margin-top:8px}
 .adminBar{background:#222;color:#fff;text-align:center;padding:8px}
-.adminBar button{width:auto;margin:4px;background:#ff9800}
+.adminBar button{background:#ff9800;width:auto;margin:4px}
 </style>
 </head>
 
@@ -28,25 +30,25 @@ iframe{width:100%;height:220px;border-radius:10px;margin-top:8px}
 
 <header>thenewtips | Ethical Learning</header>
 
-<!-- LOGIN / REGISTER -->
-<div id="authBox" class="container">
+<!-- AUTH -->
+<div id="auth" class="container">
 <div class="box">
 <h3 id="authTitle">Login</h3>
 <input id="mobile" placeholder="Mobile Number">
 <input id="password" type="password" placeholder="Password">
-<button onclick="doAuth()">Login</button>
+<button onclick="authAction()">Login</button>
 <p style="text-align:center;margin-top:10px">
-<span id="toggleText">New user?</span>
-<a href="#" onclick="toggleAuth()"> Register here</a>
+<span id="switchText">New user?</span>
+<a href="#" onclick="switchAuth()"> Register</a>
 </p>
 </div>
 </div>
 
 <!-- MAIN -->
-<div id="main" class="hidden">
+<div id="app" class="hidden">
 
 <div id="adminBar" class="adminBar hidden">
-Admin Mode
+Admin Panel |
 <button onclick="toggleEdit()">Edit Mode</button>
 <button onclick="logout()">Logout</button>
 </div>
@@ -65,7 +67,7 @@ Admin Mode
 <h3>Ethical Hacking</h3>
 <p id="homeText"></p>
 
-<div id="homeEditBox" class="hidden">
+<div id="homeEdit" class="hidden">
 <textarea id="homeInput"></textarea>
 <button onclick="saveHome()">Save</button>
 </div>
@@ -93,31 +95,31 @@ let isRegister=false;
 let isAdmin=false;
 let editMode=false;
 
-homeText.innerText=localStorage.getItem("homeText") || 
+/* HOME TEXT */
+homeText.innerText = localStorage.getItem("homeText") ||
 "Learn ethical hacking legally and responsibly.";
 
-/* TOGGLE LOGIN / REGISTER */
-function toggleAuth(){
+/* AUTH SWITCH */
+function switchAuth(){
 isRegister=!isRegister;
 authTitle.innerText=isRegister?"Register":"Login";
-document.querySelector("#authBox button").innerText=isRegister?"Register":"Login";
-toggleText.innerText=isRegister?"Already have account?":"New user?";
+document.querySelector("#auth button").innerText=isRegister?"Register":"Login";
+switchText.innerText=isRegister?"Already have account?":"New user?";
 }
 
-/* LOGIN / REGISTER LOGIC */
-function doAuth(){
+/* LOGIN / REGISTER */
+function authAction(){
 let users=JSON.parse(localStorage.getItem("users")||"{}");
 
 if(isRegister){
-if(users[mobile.value]){alert("User already exists");return;}
+if(users[mobile.value]){alert("User exists");return;}
 users[mobile.value]=password.value;
 localStorage.setItem("users",JSON.stringify(users));
-alert("Registered successfully, now login");
-toggleAuth();
+alert("Registered successfully");
+switchAuth();
 return;
 }
 
-/* LOGIN */
 if(mobile.value===ADMIN_M && password.value===ADMIN_P){
 localStorage.setItem("session","admin");
 location.reload();return;
@@ -126,15 +128,13 @@ location.reload();return;
 if(users[mobile.value]===password.value){
 localStorage.setItem("session","user");
 location.reload();
-}else{
-alert("Invalid login");
-}
+}else alert("Invalid login");
 }
 
-/* SESSION CHECK */
+/* SESSION */
 if(localStorage.getItem("session")){
-authBox.classList.add("hidden");
-main.classList.remove("hidden");
+auth.classList.add("hidden");
+app.classList.remove("hidden");
 
 if(localStorage.getItem("session")==="admin"){
 isAdmin=true;
@@ -161,25 +161,29 @@ alert("Edit Mode "+(editMode?"ON":"OFF"));
 }
 
 /* HOME EDIT */
-homeText.onclick=function(){
+homeText.onclick=()=>{
 if(isAdmin && editMode){
-homeEditBox.classList.remove("hidden");
+homeEdit.classList.remove("hidden");
 homeInput.value=homeText.innerText;
 }
 }
 function saveHome(){
 localStorage.setItem("homeText",homeInput.value);
 homeText.innerText=homeInput.value;
-homeEditBox.classList.add("hidden");
+homeEdit.classList.add("hidden");
 }
 
 /* VIDEOS */
+function yt(url){
+let m=url.match(/(?:v=|\.be\/)([^&]+)/);
+return m?m[1]:null;
+}
 function loadVideos(){
 let v=JSON.parse(localStorage.getItem("videos")||"[]");
 videoList.innerHTML=v.map((id,i)=>`
 <div class="box">
 <iframe src="https://www.youtube.com/embed/${id}" allowfullscreen></iframe>
-${isAdmin && editMode?`<button class="delBtn" onclick="delVideo(${i})">Delete</button>`:""}
+${isAdmin && editMode?`<button class="del" onclick="delVideo(${i})">Delete</button>`:""}
 </div>`).join("");
 }
 function delVideo(i){
@@ -199,7 +203,7 @@ toolList.innerHTML=t.map((x,i)=>`
 <h4>${x.name}</h4>
 <p>${x.desc}</p>
 <a href="${x.link}" target="_blank">Open</a>
-${isAdmin && editMode?`<button class="delBtn" onclick="delTool(${i})">Delete</button>`:""}
+${isAdmin && editMode?`<button class="del" onclick="delTool(${i})">Delete</button>`:""}
 </div>`).join("");
 }
 function delTool(i){
