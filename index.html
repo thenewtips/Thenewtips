@@ -4,95 +4,23 @@
 <meta charset="UTF-8">
 <title>thenewtips | Ethical Learning</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-
 <style>
-body{
-margin:0;
-font-family:Arial;
-background:#f4f6f9;
-color:#222;
-}
-header{
-background:#111;
-color:white;
-padding:15px;
-text-align:center;
-font-size:22px;
-font-weight:bold;
-}
-nav{
-display:flex;
-justify-content:space-around;
-background:#ffffff;
-padding:10px;
-box-shadow:0 2px 5px rgba(0,0,0,0.1);
-}
-nav button{
-background:none;
-border:none;
-font-size:15px;
-font-weight:bold;
-color:#333;
-}
-nav button:hover{
-color:#007bff;
-}
-.container{
-padding:15px;
-}
-.box{
-background:white;
-padding:15px;
-border-radius:10px;
-margin-bottom:15px;
-box-shadow:0 3px 8px rgba(0,0,0,0.08);
-}
-input,textarea,button{
-width:100%;
-padding:10px;
-margin-top:8px;
-border-radius:6px;
-border:1px solid #ccc;
-}
-button{
-background:#007bff;
-color:white;
-font-weight:bold;
-cursor:pointer;
-}
-button:hover{
-background:#0056b3;
-}
-.section{display:none;}
-.active{display:block;}
-.hidden{display:none;}
-iframe{
-width:100%;
-height:220px;
-border-radius:10px;
-margin-top:8px;
-}
-img{
-width:100%;
-border-radius:10px;
-margin-top:8px;
-}
-.delBtn{
-background:#dc3545;
-margin-top:8px;
-}
-.adminPanel{
-background:#222;
-color:white;
-padding:10px;
-text-align:center;
-}
-.adminPanel button{
-background:#ff9800;
-margin:5px;
-width:auto;
-padding:8px 15px;
-}
+body{margin:0;font-family:Arial;background:#f4f6f9}
+header{background:#111;color:#fff;padding:15px;text-align:center;font-size:22px;font-weight:bold}
+.container{padding:15px}
+.box{background:#fff;padding:15px;border-radius:10px;margin-bottom:15px;box-shadow:0 3px 8px rgba(0,0,0,.1)}
+input,button,textarea{width:100%;padding:10px;margin-top:8px;border-radius:6px;border:1px solid #ccc}
+button{background:#007bff;color:#fff;font-weight:bold;border:none}
+button:hover{background:#0056b3}
+.hidden{display:none}
+nav{display:flex;justify-content:space-around;background:#fff;padding:10px;box-shadow:0 2px 5px rgba(0,0,0,.1)}
+nav button{background:none;border:none;font-weight:bold}
+.section{display:none}
+.active{display:block}
+iframe{width:100%;height:220px;border-radius:10px;margin-top:8px}
+.delBtn{background:#dc3545;margin-top:8px}
+.adminBar{background:#222;color:#fff;text-align:center;padding:8px}
+.adminBar button{width:auto;margin:4px;background:#ff9800}
 </style>
 </head>
 
@@ -100,28 +28,34 @@ padding:8px 15px;
 
 <header>thenewtips | Ethical Learning</header>
 
-<div id="loginBox" class="container">
+<!-- LOGIN / REGISTER -->
+<div id="authBox" class="container">
 <div class="box">
-<h3>Login</h3>
+<h3 id="authTitle">Login</h3>
 <input id="mobile" placeholder="Mobile Number">
 <input id="password" type="password" placeholder="Password">
-<button onclick="login()">Login</button>
+<button onclick="doAuth()">Login</button>
+<p style="text-align:center;margin-top:10px">
+<span id="toggleText">New user?</span>
+<a href="#" onclick="toggleAuth()"> Register here</a>
+</p>
 </div>
 </div>
 
+<!-- MAIN -->
 <div id="main" class="hidden">
 
-<div id="adminControls" class="adminPanel hidden">
-Admin Mode:
+<div id="adminBar" class="adminBar hidden">
+Admin Mode
 <button onclick="toggleEdit()">Edit Mode</button>
-<button onclick="viewWebsite()">View Website</button>
 <button onclick="logout()">Logout</button>
 </div>
 
 <nav>
-<button onclick="showSection('home')">Home</button>
-<button onclick="showSection('videos')">Videos</button>
-<button onclick="showSection('tools')">Tools</button>
+<button onclick="show('home')">Home</button>
+<button onclick="show('videos')">Videos</button>
+<button onclick="show('tools')">Tools</button>
+<button onclick="logout()">Logout</button>
 </nav>
 
 <div class="container">
@@ -136,7 +70,7 @@ Admin Mode:
 <button onclick="saveHome()">Save</button>
 </div>
 
-<p><b>Disclaimer:</b> Only for educational purpose.</p>
+<p><b>Disclaimer:</b> Educational purpose only.</p>
 </div>
 </div>
 
@@ -152,33 +86,59 @@ Admin Mode:
 </div>
 
 <script>
-
 const ADMIN_M="9399687115";
 const ADMIN_P="seetaram1";
 
-let editMode=false;
+let isRegister=false;
 let isAdmin=false;
+let editMode=false;
 
-homeText.innerText=localStorage.getItem("homeText") || "Learn ethical hacking legally and safely.";
+homeText.innerText=localStorage.getItem("homeText") || 
+"Learn ethical hacking legally and responsibly.";
+
+/* TOGGLE LOGIN / REGISTER */
+function toggleAuth(){
+isRegister=!isRegister;
+authTitle.innerText=isRegister?"Register":"Login";
+document.querySelector("#authBox button").innerText=isRegister?"Register":"Login";
+toggleText.innerText=isRegister?"Already have account?":"New user?";
+}
+
+/* LOGIN / REGISTER LOGIC */
+function doAuth(){
+let users=JSON.parse(localStorage.getItem("users")||"{}");
+
+if(isRegister){
+if(users[mobile.value]){alert("User already exists");return;}
+users[mobile.value]=password.value;
+localStorage.setItem("users",JSON.stringify(users));
+alert("Registered successfully, now login");
+toggleAuth();
+return;
+}
 
 /* LOGIN */
-function login(){
 if(mobile.value===ADMIN_M && password.value===ADMIN_P){
-isAdmin=true;
 localStorage.setItem("session","admin");
-}else{
-localStorage.setItem("session","user");
-}
-location.reload();
+location.reload();return;
 }
 
+if(users[mobile.value]===password.value){
+localStorage.setItem("session","user");
+location.reload();
+}else{
+alert("Invalid login");
+}
+}
+
+/* SESSION CHECK */
 if(localStorage.getItem("session")){
-loginBox.classList.add("hidden");
+authBox.classList.add("hidden");
 main.classList.remove("hidden");
 
 if(localStorage.getItem("session")==="admin"){
 isAdmin=true;
-adminControls.classList.remove("hidden");
+adminBar.classList.remove("hidden");
 }
 }
 
@@ -188,8 +148,8 @@ localStorage.removeItem("session");
 location.reload();
 }
 
-/* NAVIGATION */
-function showSection(id){
+/* NAV */
+function show(id){
 document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"));
 document.getElementById(id).classList.add("active");
 }
@@ -197,13 +157,7 @@ document.getElementById(id).classList.add("active");
 /* EDIT MODE */
 function toggleEdit(){
 editMode=!editMode;
-alert("Edit Mode: "+(editMode?"ON":"OFF"));
-}
-
-/* VIEW WEBSITE */
-function viewWebsite(){
-editMode=false;
-alert("View Mode Activated");
+alert("Edit Mode "+(editMode?"ON":"OFF"));
 }
 
 /* HOME EDIT */
@@ -213,7 +167,6 @@ homeEditBox.classList.remove("hidden");
 homeInput.value=homeText.innerText;
 }
 }
-
 function saveHome(){
 localStorage.setItem("homeText",homeInput.value);
 homeText.innerText=homeInput.value;
@@ -221,53 +174,41 @@ homeEditBox.classList.add("hidden");
 }
 
 /* VIDEOS */
-function extractID(url){
-let match=url.match(/(?:v=|\.be\/)([^&]+)/);
-return match?match[1]:null;
-}
-
 function loadVideos(){
-let videos=JSON.parse(localStorage.getItem("videos")||"[]");
-videoList.innerHTML=videos.map((id,i)=>`
+let v=JSON.parse(localStorage.getItem("videos")||"[]");
+videoList.innerHTML=v.map((id,i)=>`
 <div class="box">
 <iframe src="https://www.youtube.com/embed/${id}" allowfullscreen></iframe>
-${isAdmin && editMode?`<button class="delBtn" onclick="deleteVideo(${i})">Delete</button>`:""}
-</div>
-`).join("");
+${isAdmin && editMode?`<button class="delBtn" onclick="delVideo(${i})">Delete</button>`:""}
+</div>`).join("");
 }
-
-function deleteVideo(i){
-let videos=JSON.parse(localStorage.getItem("videos")||"[]");
-videos.splice(i,1);
-localStorage.setItem("videos",JSON.stringify(videos));
+function delVideo(i){
+let v=JSON.parse(localStorage.getItem("videos")||"[]");
+v.splice(i,1);
+localStorage.setItem("videos",JSON.stringify(v));
 loadVideos();
 }
-
 loadVideos();
 
 /* TOOLS */
 function loadTools(){
-let tools=JSON.parse(localStorage.getItem("tools")||"[]");
-toolList.innerHTML=tools.map((t,i)=>`
+let t=JSON.parse(localStorage.getItem("tools")||"[]");
+toolList.innerHTML=t.map((x,i)=>`
 <div class="box">
-<img src="${t.img}">
-<h4>${t.name}</h4>
-<p>${t.desc}</p>
-<a href="${t.link}" target="_blank">Open Tool</a>
-${isAdmin && editMode?`<button class="delBtn" onclick="deleteTool(${i})">Delete</button>`:""}
-</div>
-`).join("");
+<img src="${x.img}">
+<h4>${x.name}</h4>
+<p>${x.desc}</p>
+<a href="${x.link}" target="_blank">Open</a>
+${isAdmin && editMode?`<button class="delBtn" onclick="delTool(${i})">Delete</button>`:""}
+</div>`).join("");
 }
-
-function deleteTool(i){
-let tools=JSON.parse(localStorage.getItem("tools")||"[]");
-tools.splice(i,1);
-localStorage.setItem("tools",JSON.stringify(tools));
+function delTool(i){
+let t=JSON.parse(localStorage.getItem("tools")||"[]");
+t.splice(i,1);
+localStorage.setItem("tools",JSON.stringify(t));
 loadTools();
 }
-
 loadTools();
-
 </script>
 
 </body>
