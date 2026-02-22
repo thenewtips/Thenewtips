@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<title>thenewtips | Official Website</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body{
+  font-family: Arial, sans-serif;
+  background:#f4f4f4;
+  margin:0;
+  padding:0;
+}
+header{
+  background:#ff0000;
+  color:#fff;
+  padding:15px;
+  text-align:center;
+}
+.box{
+  background:#fff;
+  margin:15px;
+  padding:15px;
+  border-radius:8px;
+}
+input,button{
+  width:100%;
+  padding:10px;
+  margin:8px 0;
+}
+button{
+  background:#ff0000;
+  color:#fff;
+  border:none;
+  cursor:pointer;
+}
+button:hover{
+  background:#cc0000;
+}
+.hidden{display:none;}
+iframe{
+  width:100%;
+  height:250px;
+  border-radius:8px;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <h2>thenewtips Website</h2>
+</header>
+
+<!-- LOGIN PAGE -->
+<div class="box" id="loginBox">
+  <h3>Login / Register</h3>
+  <input type="number" id="mobile" placeholder="Mobile Number">
+  <button onclick="login()">Login</button>
+</div>
+
+<!-- HOME PAGE -->
+<div class="box hidden" id="homeBox">
+  <h3>Welcome to thenewtips</h3>
+
+  <iframe 
+    src="https://www.youtube.com/embed?listType=user_uploads&list=thenewtips">
+  </iframe>
+
+  <br><br>
+  <button onclick="openAdmin()">Admin Panel</button>
+  <button onclick="logout()">Logout</button>
+</div>
+
+<!-- ADMIN LOGIN -->
+<div class="box hidden" id="adminLogin">
+  <h3>Admin Login</h3>
+  <input type="password" id="adminPass" placeholder="Admin Password">
+  <button onclick="adminLogin()">Login</button>
+</div>
+
+<!-- ADMIN PANEL -->
+<div class="box hidden" id="adminPanel">
+  <h3>Admin Panel</h3>
+  <p>Yahan se aap content edit kar sakte ho</p>
+  <button onclick="alert('Future update: video settings')">Edit Videos</button>
+  <button onclick="alert('Future update: website settings')">Website Settings</button>
+  <button onclick="adminLogout()">Logout Admin</button>
+</div>
+
+<script>
+function login(){
+  let mobile = document.getElementById("mobile").value;
+  if(mobile.length < 10){
+    alert("Sahi mobile number dalo");
+    return;
+  }
+  localStorage.setItem("user", mobile);
+  document.getElementById("loginBox").classList.add("hidden");
+  document.getElementById("homeBox").classList.remove("hidden");
+}
+
+function logout(){
+  localStorage.removeItem("user");
+  location.reload();
+}
+
+function openAdmin(){
+  document.getElementById("homeBox").classList.add("hidden");
+  document.getElementById("adminLogin").classList.remove("hidden");
+}
+
+function adminLogin(){
+  let pass = document.getElementById("adminPass").value;
+  if(pass === "admin123"){
+    document.getElementById("adminLogin").classList.add("hidden");
+    document.getElementById("adminPanel").classList.remove("hidden");
+  }else{
+    alert("Wrong Admin Password");
+  }
+}
+
+function adminLogout(){
+  document.getElementById("adminPanel").classList.add("hidden");
+  document.getElementById("homeBox").classList.remove("hidden");
+}
+
+// Auto login
+if(localStorage.getItem("user")){
+  document.getElementById("loginBox").classList.add("hidden");
+  document.getElementById("homeBox").classList.remove("hidden");
+}
+</script>
+
+</body>
+</html>
