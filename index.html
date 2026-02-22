@@ -2,14 +2,14 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>thenewtips | Official</title>
+<title id="siteTitle">thenewtips | Ethical Learning</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <style>
 body{
   margin:0;
   font-family:Arial, sans-serif;
-  background:#0f0f0f;
+  background:#0e0e0e;
   color:white;
 }
 header{
@@ -18,44 +18,41 @@ header{
   text-align:center;
   font-size:20px;
   font-weight:bold;
-  letter-spacing:1px;
   border-bottom:2px solid red;
 }
-.container{
-  padding:15px;
+nav{
+  display:flex;
+  justify-content:space-around;
+  background:#1a1a1a;
+  padding:10px;
 }
+nav button{
+  background:none;
+  border:none;
+  color:white;
+  font-size:16px;
+}
+nav button:hover{color:red;}
+.section{display:none; padding:15px;}
+.active{display:block;}
 .box{
   background:#1c1c1c;
   padding:15px;
   border-radius:10px;
   margin-bottom:15px;
 }
-input,button{
+input,textarea,button{
   width:100%;
   padding:10px;
   margin-top:10px;
   border-radius:6px;
   border:none;
 }
-input{
-  background:#333;
-  color:white;
-}
+input,textarea{background:#333;color:white;}
 button{
   background:red;
   color:white;
   font-weight:bold;
-  cursor:pointer;
-}
-button:hover{
-  background:#cc0000;
-}
-.hidden{display:none;}
-.video-card{
-  background:#1c1c1c;
-  padding:10px;
-  border-radius:10px;
-  margin-bottom:15px;
 }
 .video-card img{
   width:100%;
@@ -67,126 +64,150 @@ iframe{
   border-radius:10px;
   margin-top:10px;
 }
+.tool-btn{
+  display:block;
+  text-align:center;
+  background:#222;
+  padding:12px;
+  border-radius:8px;
+  margin-bottom:10px;
+  color:white;
+  text-decoration:none;
+}
+.tool-btn:hover{background:red;}
+.hidden{display:none;}
 </style>
 </head>
 
 <body>
 
-<header>thenewtips Official Website</header>
-
-<div class="container">
-
-<!-- REGISTER -->
-<div class="box" id="registerBox">
-<h3>Register</h3>
-<input type="number" id="regMobile" placeholder="Mobile Number">
-<input type="password" id="regPass" placeholder="Password">
-<button onclick="register()">Register</button>
-<p>Already account? <a href="#" onclick="showLogin()" style="color:red;">Login</a></p>
-</div>
+<header id="headerTitle">thenewtips Ethical Platform</header>
 
 <!-- LOGIN -->
-<div class="box hidden" id="loginBox">
-<h3>Login</h3>
-<input type="number" id="logMobile" placeholder="Mobile Number">
-<input type="password" id="logPass" placeholder="Password">
+<div class="box" id="loginBox">
+<h3>Login / Register</h3>
+<input type="number" id="mobile" placeholder="Mobile Number">
+<input type="password" id="password" placeholder="Password">
 <button onclick="login()">Login</button>
 </div>
 
-<!-- HOME -->
-<div id="homeBox" class="hidden">
-<h3>Latest Videos</h3>
-<div id="videoList"></div>
+<!-- MAIN -->
+<div id="mainBox" class="hidden">
+
+<nav>
+<button onclick="show('home')">Home</button>
+<button onclick="show('videos')">Videos</button>
+<button onclick="show('tools')">Tools</button>
 <button onclick="logout()">Logout</button>
+</nav>
+
+<!-- HOME -->
+<div id="home" class="section active">
+<div class="box">
+<h3>Ethical Hacking</h3>
+<p id="homeText"></p>
+<hr>
+<h4>Disclaimer</h4>
+<p>
+This website is only for educational purposes.  
+Any misuse of information is not our responsibility.
+</p>
+</div>
+</div>
+
+<!-- VIDEOS -->
+<div id="videos" class="section">
+<div id="videoList"></div>
+</div>
+
+<!-- TOOLS -->
+<div id="tools" class="section">
+<a class="tool-btn" href="https://github.com/zphisher/zphisher" target="_blank">Zphisher Tool</a>
+<a class="tool-btn" href="https://github.com/htr-tech/nexphisher" target="_blank">NexPhisher Tool</a>
+<a class="tool-btn" href="https://github.com/sqlmapproject/sqlmap" target="_blank">SQLMap Tool</a>
+<a class="tool-btn" href="https://github.com/beefproject/beef" target="_blank">BeEF Framework</a>
+</div>
+
 </div>
 
 <!-- ADMIN PANEL -->
 <div id="adminPanel" class="hidden">
 <div class="box">
 <h3>Admin Panel</h3>
-<input type="text" id="videoLink" placeholder="Paste YouTube Video Link">
+
+<input id="titleEdit" placeholder="Website Title">
+<textarea id="homeEdit" placeholder="Home page text"></textarea>
+<button onclick="saveContent()">Save Content</button>
+
+<input id="videoLink" placeholder="YouTube Video Link">
 <button onclick="addVideo()">Add Video</button>
+
 <button onclick="logout()">Logout</button>
 </div>
 </div>
 
-</div>
-
 <script>
-const ADMIN_MOBILE = "9399687115";
-const ADMIN_PASS = "seetaram1";
+const ADMIN_M="9399687115";
+const ADMIN_P="seetaram1";
 
-function register(){
-  let m = regMobile.value;
-  let p = regPass.value;
-  if(m.length<10 || p.length<4){
-    alert("Valid details daalo");
-    return;
-  }
-  localStorage.setItem("userMobile",m);
-  localStorage.setItem("userPass",p);
-  alert("Register Successful");
-  showLogin();
-}
-
-function showLogin(){
-  registerBox.classList.add("hidden");
-  loginBox.classList.remove("hidden");
-}
+homeText.innerText =
+localStorage.getItem("homeText") ||
+"Ethical hacking is the practice of identifying security weaknesses with proper permission to improve system safety.";
 
 function login(){
-  let m = logMobile.value;
-  let p = logPass.value;
-
-  if(m===ADMIN_MOBILE && p===ADMIN_PASS){
+  if(mobile.value===ADMIN_M && password.value===ADMIN_P){
     loginBox.classList.add("hidden");
     adminPanel.classList.remove("hidden");
+    titleEdit.value=localStorage.getItem("title")||"thenewtips Ethical Platform";
+    homeEdit.value=homeText.innerText;
     loadVideos();
     return;
   }
-
-  if(m===localStorage.getItem("userMobile") &&
-     p===localStorage.getItem("userPass")){
-    loginBox.classList.add("hidden");
-    homeBox.classList.remove("hidden");
-    loadVideos();
-  }else{
-    alert("Wrong login details");
-  }
+  localStorage.setItem("user","ok");
+  loginBox.classList.add("hidden");
+  mainBox.classList.remove("hidden");
+  loadVideos();
 }
 
-function logout(){
-  location.reload();
+function logout(){location.reload();}
+
+function show(id){
+  document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"));
+  document.getElementById(id).classList.add("active");
 }
 
-function getVideoId(url){
-  let regExp = /(?:youtube\.com.*(?:\?|&)v=|youtu\.be\/)([^&#]+)/;
-  let match = url.match(regExp);
-  return match ? match[1] : null;
+function saveContent(){
+  localStorage.setItem("title",titleEdit.value);
+  localStorage.setItem("homeText",homeEdit.value);
+  siteTitle.innerText=titleEdit.value;
+  headerTitle.innerText=titleEdit.value;
+  homeText.innerText=homeEdit.value;
+  alert("Updated");
+}
+
+function getId(url){
+  let m=url.match(/(?:v=|\.be\/)([^&]+)/);
+  return m?m[1]:null;
 }
 
 function addVideo(){
-  let link = videoLink.value;
-  let id = getVideoId(link);
-  if(!id){
-    alert("Valid YouTube link daalo");
-    return;
-  }
-  let videos = JSON.parse(localStorage.getItem("videos") || "[]");
-  videos.push(id);
-  localStorage.setItem("videos",JSON.stringify(videos));
+  let id=getId(videoLink.value);
+  if(!id)return alert("Valid link dalo");
+  let v=JSON.parse(localStorage.getItem("videos")||"[]");
+  v.push(id);
+  localStorage.setItem("videos",JSON.stringify(v));
   videoLink.value="";
   loadVideos();
 }
 
 function loadVideos(){
-  let videos = JSON.parse(localStorage.getItem("videos") || "[]");
+  let v=JSON.parse(localStorage.getItem("videos")||"[]");
   let html="";
-  videos.reverse().forEach(id=>{
+  v.slice().reverse().forEach(i=>{
     html+=`
-    <div class="video-card">
-      <img src="https://img.youtube.com/vi/${id}/hqdefault.jpg">
-      <iframe src="https://www.youtube.com/embed/${id}" allowfullscreen></iframe>
+    <div class="box video-card">
+      <img src="https://img.youtube.com/vi/${i}/hqdefault.jpg">
+      <iframe src="https://www.youtube.com/embed/${i}" allowfullscreen></iframe>
     </div>`;
   });
   videoList.innerHTML=html;
