@@ -9,7 +9,7 @@
 body{
   margin:0;
   font-family:Segoe UI, Arial;
-  background:linear-gradient(135deg,#0f0f0f,#1a1a1a);
+  background:#0d0d0d;
   color:#fff;
 }
 header{
@@ -18,12 +18,12 @@ header{
   font-size:22px;
   font-weight:700;
   background:#111;
-  border-bottom:2px solid #ff0000;
+  border-bottom:2px solid red;
 }
 nav{
   display:flex;
   justify-content:space-around;
-  background:#181818;
+  background:#1a1a1a;
   padding:12px 0;
 }
 nav button{
@@ -32,7 +32,7 @@ nav button{
   color:#fff;
   font-size:16px;
 }
-nav button:hover{color:#ff0000;}
+nav button:hover{color:red;}
 .container{padding:15px;}
 .section{display:none;}
 .active{display:block;}
@@ -41,26 +41,26 @@ nav button:hover{color:#ff0000;}
   padding:18px;
   border-radius:14px;
   margin-bottom:18px;
-  box-shadow:0 0 10px rgba(0,0,0,.6);
 }
-h3,h4{margin-top:0;color:#ff4444;}
 input,textarea,button{
   width:100%;
   padding:12px;
   margin-top:10px;
   border-radius:8px;
   border:none;
-  font-size:15px;
 }
 input,textarea{background:#333;color:#fff;}
 button{
-  background:#ff0000;
+  background:red;
   color:#fff;
   font-weight:600;
 }
-button:hover{background:#cc0000;}
 .hidden{display:none;}
-
+img.hero{
+  width:100%;
+  border-radius:12px;
+  margin-top:12px;
+}
 .video-card img{
   width:100%;
   border-radius:12px;
@@ -69,13 +69,12 @@ iframe{
   width:100%;
   height:240px;
   border-radius:12px;
-  margin-top:12px;
+  margin-top:10px;
 }
-
 .tool-card{
   display:flex;
   gap:12px;
-  background:#232323;
+  background:#242424;
   padding:12px;
   border-radius:12px;
   margin-bottom:12px;
@@ -85,10 +84,20 @@ iframe{
   height:60px;
   border-radius:10px;
 }
-.tool-card a{
-  color:#ff4444;
-  text-decoration:none;
-  font-weight:600;
+.del{
+  background:#444;
+  margin-top:8px;
+}
+.dashboard{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:10px;
+}
+.stat{
+  background:#292929;
+  padding:12px;
+  border-radius:10px;
+  text-align:center;
 }
 </style>
 </head>
@@ -109,7 +118,6 @@ iframe{
 
 <!-- MAIN -->
 <div id="mainBox" class="hidden">
-
 <nav>
 <button onclick="show('home')">Home</button>
 <button onclick="show('videos')">Videos</button>
@@ -122,16 +130,17 @@ iframe{
 <!-- HOME -->
 <div id="home" class="section active">
 <div class="box">
-<h3>About Ethical Hacking</h3>
+<h3>Ethical Hacking & Cyber Security</h3>
 <p id="homeText"></p>
 
-<h4>Why This Website?</h4>
-<p id="extraText"></p>
+<img class="hero" src="https://images.unsplash.com/photo-1605902711622-cfb43c44367f">
+<img class="hero" src="https://images.unsplash.com/photo-1550751827-4bd374c3f58b">
+<img class="hero" src="https://images.unsplash.com/photo-1591696205602-2f950c417cb9">
 
 <h4>Disclaimer</h4>
 <p>
-This platform is strictly for educational and awareness purposes only.  
-Any misuse of information is not our responsibility.
+This website is for educational purposes only.  
+Any misuse of information is strictly prohibited.
 </p>
 </div>
 </div>
@@ -153,11 +162,19 @@ Any misuse of information is not our responsibility.
 <div id="adminPanel" class="hidden">
 <div class="container">
 <div class="box">
-<h3>Admin Control Panel</h3>
+<h3>Admin Dashboard</h3>
+
+<div class="dashboard">
+<div class="stat">Users<br><b id="uCount">0</b></div>
+<div class="stat">Logins<br><b id="lCount">0</b></div>
+<div class="stat">Videos<br><b id="vCount">0</b></div>
+<div class="stat">Tools<br><b id="tCount">0</b></div>
+</div>
+
+<hr>
 
 <input id="titleEdit" placeholder="Website Title">
-<textarea id="homeEdit" placeholder="Home main text"></textarea>
-<textarea id="extraEdit" placeholder="Why this website text"></textarea>
+<textarea id="homeEdit" placeholder="Home page text"></textarea>
 <button onclick="saveText()">Save Text</button>
 
 <hr>
@@ -170,7 +187,7 @@ Any misuse of information is not our responsibility.
 <input id="toolName" placeholder="Tool Name">
 <input id="toolImg" placeholder="Tool Image URL">
 <input id="toolLink" placeholder="Tool GitHub Link">
-<textarea id="toolDesc" placeholder="Tool use / description"></textarea>
+<textarea id="toolDesc" placeholder="Tool description"></textarea>
 <button onclick="addTool()">Add Tool</button>
 
 <button onclick="logout()">Logout</button>
@@ -182,7 +199,24 @@ Any misuse of information is not our responsibility.
 const ADMIN_M="9399687115";
 const ADMIN_P="seetaram1";
 
-/* session fix */
+homeText.innerText =
+localStorage.getItem("homeText") ||
+"Ethical hacking helps organizations improve cyber security by identifying vulnerabilities legally.";
+
+function login(){
+  let lc=+localStorage.getItem("logins")||0;
+  localStorage.setItem("logins",++lc);
+
+  if(mobile.value===ADMIN_M && password.value===ADMIN_P){
+    localStorage.setItem("session","admin");
+    location.reload(); return;
+  }
+  let uc=+localStorage.getItem("users")||0;
+  localStorage.setItem("users",++uc);
+  localStorage.setItem("session","user");
+  location.reload();
+}
+
 if(localStorage.getItem("session")==="user"){
   loginBox.classList.add("hidden");
   mainBox.classList.remove("hidden");
@@ -190,24 +224,7 @@ if(localStorage.getItem("session")==="user"){
 if(localStorage.getItem("session")==="admin"){
   loginBox.classList.add("hidden");
   adminPanel.classList.remove("hidden");
-}
-
-homeText.innerText =
-localStorage.getItem("homeText") ||
-"Ethical hacking means testing systems legally to find security weaknesses and help protect users.";
-
-extraText.innerText =
-localStorage.getItem("extraText") ||
-"This website provides learning resources, videos and tools in a simple and safe way.";
-
-function login(){
-  if(mobile.value===ADMIN_M && password.value===ADMIN_P){
-    localStorage.setItem("session","admin");
-    location.reload();
-    return;
-  }
-  localStorage.setItem("session","user");
-  location.reload();
+  loadDashboard();
 }
 
 function logout(){
@@ -221,14 +238,9 @@ function show(id){
 }
 
 function saveText(){
-  localStorage.setItem("title",titleEdit.value);
   localStorage.setItem("homeText",homeEdit.value);
-  localStorage.setItem("extraText",extraEdit.value);
-  siteTitle.innerText=titleEdit.value;
-  headerTitle.innerText=titleEdit.value;
   homeText.innerText=homeEdit.value;
-  extraText.innerText=extraEdit.value;
-  alert("Content Updated");
+  alert("Updated");
 }
 
 function getId(u){
@@ -238,48 +250,65 @@ function getId(u){
 
 function addVideo(){
   let id=getId(videoLink.value);
-  if(!id)return alert("Valid link dalo");
+  if(!id)return alert("Valid link");
   let v=JSON.parse(localStorage.getItem("videos")||"[]");
   v.push(id);
   localStorage.setItem("videos",JSON.stringify(v));
-  loadVideos();
+  loadVideos(); loadDashboard();
 }
 
 function loadVideos(){
   let v=JSON.parse(localStorage.getItem("videos")||"[]");
-  videoList.innerHTML=v.reverse().map(i=>`
+  videoList.innerHTML=v.map((i,idx)=>`
   <div class="box video-card">
     <img src="https://img.youtube.com/vi/${i}/hqdefault.jpg">
     <iframe src="https://www.youtube.com/embed/${i}" allowfullscreen></iframe>
+    ${localStorage.getItem("session")==="admin"
+      ? `<button class="del" onclick="delVideo(${idx})">Remove</button>`:""}
   </div>`).join("");
+}
+function delVideo(i){
+  let v=JSON.parse(localStorage.getItem("videos"));
+  v.splice(i,1);
+  localStorage.setItem("videos",JSON.stringify(v));
+  loadVideos(); loadDashboard();
 }
 loadVideos();
 
 function addTool(){
   let t=JSON.parse(localStorage.getItem("tools")||"[]");
-  t.push({
-    n:toolName.value,
-    i:toolImg.value,
-    l:toolLink.value,
-    d:toolDesc.value
-  });
+  t.push({n:toolName.value,i:toolImg.value,l:toolLink.value,d:toolDesc.value});
   localStorage.setItem("tools",JSON.stringify(t));
-  loadTools();
+  loadTools(); loadDashboard();
 }
-
 function loadTools(){
   let t=JSON.parse(localStorage.getItem("tools")||"[]");
-  toolList.innerHTML=t.map(x=>`
+  toolList.innerHTML=t.map((x,i)=>`
   <div class="tool-card">
     <img src="${x.i}">
     <div>
-      <strong>${x.n}</strong>
+      <b>${x.n}</b>
       <p>${x.d}</p>
-      <a href="${x.l}" target="_blank">Open Tool</a>
+      <a href="${x.l}" target="_blank">Open</a>
+      ${localStorage.getItem("session")==="admin"
+        ? `<button class="del" onclick="delTool(${i})">Remove</button>`:""}
     </div>
   </div>`).join("");
 }
+function delTool(i){
+  let t=JSON.parse(localStorage.getItem("tools"));
+  t.splice(i,1);
+  localStorage.setItem("tools",JSON.stringify(t));
+  loadTools(); loadDashboard();
+}
 loadTools();
+
+function loadDashboard(){
+  uCount.innerText=localStorage.getItem("users")||0;
+  lCount.innerText=localStorage.getItem("logins")||0;
+  vCount.innerText=(JSON.parse(localStorage.getItem("videos")||"[]")).length;
+  tCount.innerText=(JSON.parse(localStorage.getItem("tools")||"[]")).length;
+}
 </script>
 
 </body>
