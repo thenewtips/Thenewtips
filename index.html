@@ -56,11 +56,13 @@ button{
   font-weight:600;
 }
 .hidden{display:none;}
-img.hero{
+
+.hero{
   width:100%;
   border-radius:12px;
-  margin-top:12px;
+  margin-top:10px;
 }
+
 .video-card img{
   width:100%;
   border-radius:12px;
@@ -71,34 +73,25 @@ iframe{
   border-radius:12px;
   margin-top:10px;
 }
-.tool-card{
-  display:flex;
-  gap:12px;
+
+.tool-card,.social-card{
   background:#242424;
   padding:12px;
   border-radius:12px;
   margin-bottom:12px;
 }
+
 .tool-card img{
   width:60px;
   height:60px;
   border-radius:10px;
 }
+
 .del{
   background:#444;
   margin-top:8px;
 }
-.dashboard{
-  display:grid;
-  grid-template-columns:repeat(2,1fr);
-  gap:10px;
-}
-.stat{
-  background:#292929;
-  padding:12px;
-  border-radius:10px;
-  text-align:center;
-}
+a{color:#ff4d4d;}
 </style>
 </head>
 
@@ -137,6 +130,9 @@ iframe{
 <img class="hero" src="https://images.unsplash.com/photo-1550751827-4bd374c3f58b">
 <img class="hero" src="https://images.unsplash.com/photo-1591696205602-2f950c417cb9">
 
+<h4>Contact / Support</h4>
+<div id="socialList"></div>
+
 <h4>Disclaimer</h4>
 <p>
 This website is for educational purposes only.  
@@ -162,16 +158,7 @@ Any misuse of information is strictly prohibited.
 <div id="adminPanel" class="hidden">
 <div class="container">
 <div class="box">
-<h3>Admin Dashboard</h3>
-
-<div class="dashboard">
-<div class="stat">Users<br><b id="uCount">0</b></div>
-<div class="stat">Logins<br><b id="lCount">0</b></div>
-<div class="stat">Videos<br><b id="vCount">0</b></div>
-<div class="stat">Tools<br><b id="tCount">0</b></div>
-</div>
-
-<hr>
+<h3>Admin Control Panel</h3>
 
 <input id="titleEdit" placeholder="Website Title">
 <textarea id="homeEdit" placeholder="Home page text"></textarea>
@@ -190,6 +177,12 @@ Any misuse of information is strictly prohibited.
 <textarea id="toolDesc" placeholder="Tool description"></textarea>
 <button onclick="addTool()">Add Tool</button>
 
+<hr>
+
+<input id="socialName" placeholder="Social / Support Name (e.g. WhatsApp)">
+<input id="socialLink" placeholder="Social / Support Link">
+<button onclick="addSocial()">Add Social Link</button>
+
 <button onclick="logout()">Logout</button>
 </div>
 </div>
@@ -199,20 +192,16 @@ Any misuse of information is strictly prohibited.
 const ADMIN_M="9399687115";
 const ADMIN_P="seetaram1";
 
+/* default text */
 homeText.innerText =
 localStorage.getItem("homeText") ||
-"Ethical hacking helps organizations improve cyber security by identifying vulnerabilities legally.";
+"Ethical hacking helps improve cyber security by legally finding system weaknesses.";
 
 function login(){
-  let lc=+localStorage.getItem("logins")||0;
-  localStorage.setItem("logins",++lc);
-
   if(mobile.value===ADMIN_M && password.value===ADMIN_P){
     localStorage.setItem("session","admin");
     location.reload(); return;
   }
-  let uc=+localStorage.getItem("users")||0;
-  localStorage.setItem("users",++uc);
   localStorage.setItem("session","user");
   location.reload();
 }
@@ -224,7 +213,6 @@ if(localStorage.getItem("session")==="user"){
 if(localStorage.getItem("session")==="admin"){
   loginBox.classList.add("hidden");
   adminPanel.classList.remove("hidden");
-  loadDashboard();
 }
 
 function logout(){
@@ -237,26 +225,29 @@ function show(id){
   document.getElementById(id).classList.add("active");
 }
 
+/* HOME TEXT */
 function saveText(){
+  localStorage.setItem("title",titleEdit.value);
   localStorage.setItem("homeText",homeEdit.value);
+  siteTitle.innerText=titleEdit.value;
+  headerTitle.innerText=titleEdit.value;
   homeText.innerText=homeEdit.value;
   alert("Updated");
 }
 
+/* VIDEOS */
 function getId(u){
   let m=u.match(/(?:v=|\.be\/)([^&]+)/);
   return m?m[1]:null;
 }
-
 function addVideo(){
   let id=getId(videoLink.value);
-  if(!id)return alert("Valid link");
+  if(!id)return alert("Valid YouTube link dalo");
   let v=JSON.parse(localStorage.getItem("videos")||"[]");
   v.push(id);
   localStorage.setItem("videos",JSON.stringify(v));
-  loadVideos(); loadDashboard();
+  loadVideos();
 }
-
 function loadVideos(){
   let v=JSON.parse(localStorage.getItem("videos")||"[]");
   videoList.innerHTML=v.map((i,idx)=>`
@@ -264,51 +255,68 @@ function loadVideos(){
     <img src="https://img.youtube.com/vi/${i}/hqdefault.jpg">
     <iframe src="https://www.youtube.com/embed/${i}" allowfullscreen></iframe>
     ${localStorage.getItem("session")==="admin"
-      ? `<button class="del" onclick="delVideo(${idx})">Remove</button>`:""}
+      ? `<button class="del" onclick="delVideo(${idx})">Delete</button>`:""}
   </div>`).join("");
 }
 function delVideo(i){
   let v=JSON.parse(localStorage.getItem("videos"));
   v.splice(i,1);
   localStorage.setItem("videos",JSON.stringify(v));
-  loadVideos(); loadDashboard();
+  loadVideos();
 }
 loadVideos();
 
+/* TOOLS */
 function addTool(){
   let t=JSON.parse(localStorage.getItem("tools")||"[]");
   t.push({n:toolName.value,i:toolImg.value,l:toolLink.value,d:toolDesc.value});
   localStorage.setItem("tools",JSON.stringify(t));
-  loadTools(); loadDashboard();
+  loadTools();
 }
 function loadTools(){
   let t=JSON.parse(localStorage.getItem("tools")||"[]");
   toolList.innerHTML=t.map((x,i)=>`
   <div class="tool-card">
     <img src="${x.i}">
-    <div>
-      <b>${x.n}</b>
-      <p>${x.d}</p>
-      <a href="${x.l}" target="_blank">Open</a>
-      ${localStorage.getItem("session")==="admin"
-        ? `<button class="del" onclick="delTool(${i})">Remove</button>`:""}
-    </div>
+    <b>${x.n}</b>
+    <p>${x.d}</p>
+    <a href="${x.l}" target="_blank">Open Tool</a>
+    ${localStorage.getItem("session")==="admin"
+      ? `<button class="del" onclick="delTool(${i})">Delete</button>`:""}
   </div>`).join("");
 }
 function delTool(i){
   let t=JSON.parse(localStorage.getItem("tools"));
   t.splice(i,1);
   localStorage.setItem("tools",JSON.stringify(t));
-  loadTools(); loadDashboard();
+  loadTools();
 }
 loadTools();
 
-function loadDashboard(){
-  uCount.innerText=localStorage.getItem("users")||0;
-  lCount.innerText=localStorage.getItem("logins")||0;
-  vCount.innerText=(JSON.parse(localStorage.getItem("videos")||"[]")).length;
-  tCount.innerText=(JSON.parse(localStorage.getItem("tools")||"[]")).length;
+/* SOCIAL LINKS */
+function addSocial(){
+  let s=JSON.parse(localStorage.getItem("socials")||"[]");
+  s.push({n:socialName.value,l:socialLink.value});
+  localStorage.setItem("socials",JSON.stringify(s));
+  loadSocial();
 }
+function loadSocial(){
+  let s=JSON.parse(localStorage.getItem("socials")||"[]");
+  socialList.innerHTML=s.map((x,i)=>`
+  <div class="social-card">
+    <b>${x.n}</b><br>
+    <a href="${x.l}" target="_blank">${x.l}</a>
+    ${localStorage.getItem("session")==="admin"
+      ? `<button class="del" onclick="delSocial(${i})">Delete</button>`:""}
+  </div>`).join("");
+}
+function delSocial(i){
+  let s=JSON.parse(localStorage.getItem("socials"));
+  s.splice(i,1);
+  localStorage.setItem("socials",JSON.stringify(s));
+  loadSocial();
+}
+loadSocial();
 </script>
 
 </body>
